@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <div id="google_translate_element"></div>
+  <script src="language.js"></script>
+
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+    }
+  </script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Registration</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script> 
+  <style>
+    body {
+      background-color: #e0e0e0; /* Lightish greyish white */
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      margin-top: 60px;
+    }
+
+    .card {
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+      background-color: #2f2f2f; /* Greyish black */
+      color: white;
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+      text-align: center;
+    }
+
+    .card-body {
+      padding: 40px;
+      background-color: #fff;
+    }
+
+    .form-group label {
+      font-weight: bold;
+      font-size: 15px;
+      color: #2f2f2f; /* Greyish black */
+    }
+
+    .form-control {
+      border-radius: 8px;
+      box-shadow: none;
+    }
+
+    .btn {
+      border-radius: 8px;
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+    }
+
+    .btn-info {
+      background-color: #719297;
+      border-color: #94a8ab;
+    }
+
+    .btn-info:hover {
+      background-color: #54696c;
+      border-color: #117a8b;
+    }
+
+    .btn-success {
+      background-color: #55785d;
+      border-color: #28a745;
+    }
+
+    .btn-success:hover {
+      background-color: #218838;
+      border-color: #1e7e34;
+    }
+
+    .btn-primary {
+      background-color: #616e7c;
+      border-color: #3f4851;
+    }
+
+    .btn-primary:hover {
+      background-color: #535c66;
+      border-color: #798897;
+    }
+
+    .card-footer a {
+      font-size: 14px;
+      color: #56626f;
+      text-decoration: none;
+    }
+
+    .card-footer a:hover {
+      text-decoration: underline;
+    }
+
+    .form-text {
+      font-size: 12px;
+    }
+
+    .form-control:focus {
+      box-shadow: 0 0 5px rgba(116, 163, 214, 0.75);
+    }
+
+    .alert {
+      margin-top: 20px;
+    }
+
+    .btn {
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-4">
+        <div class="card">
+          <div class="card-header">
+            <h3>Register as User</h3>
+          </div>
+          <div class="card-body">
+            <!-- OTP Form -->
+            <form id="otpForm">
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+              </div>
+              <button type="button" id="sendOtpBtn" class="btn btn-info">Send OTP</button>
+
+              <div id="otpSection" style="display: none;">
+                <label for="otp">Enter OTP</label>
+                <input type="text" class="form-control" id="otp" name="otp" required>
+                <button type="button" id="verifyOtpBtn" class="btn btn-success mt-2">Verify OTP</button>
+              </div>
+            </form>
+
+            <!-- Registration Form -->
+            <form id="registrationForm" action="/register/client" method="POST">
+              <input type="hidden" name="email" id="verifiedEmail">
+
+              <div class="form-group">
+                <label for="fullname">Full Name</label>
+                <input type="text" class="form-control" id="fullname" name="fullname" pattern="^[A-Za-z ]+$" required>
+              </div>
+
+              <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" name="username" pattern="^[A-Za-z0-9]+$" required>
+              </div>
+
+              <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password" minlength="8" required>
+              </div>
+
+              <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                <small class="form-text text-muted">Passwords must match.</small>
+              </div>
+
+              <div class="form-group">
+                <label for="phonenumber">Phone Number</label>
+                <input type="text" class="form-control" id="phonenumber" name="phonenumber" pattern="^[0-9]{10}$" required>
+              </div>
+
+              <div class="form-group">
+                <label for="state">State</label>
+                <select class="form-control" id="state" name="state" required>
+                  <option value="">Select State</option>
+                  <option value="Andhra Pradesh">Andhra Pradesh</option>
+                  <option value="Maharashtra">Maharashtra</option>
+                  <option value="Tamil Nadu">Tamil Nadu</option>
+                  <option value="Karnataka">Karnataka</option>
+                  <option value="Delhi">Delhi</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="city">City</label>
+                <select class="form-control" id="city" name="city" required>
+                  <option value="">Select City</option>
+                </select>
+              </div>
+
+              <button type="submit" class="btn btn-primary">Register</button>
+            </form>
+          </div>
+          <div class="card-footer text-center">
+            <a href="index.html">Back to Home</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const cityOptions = {
+      "Andhra Pradesh": ["Visakhapatnam", "Vijayawada", "Guntur", "Tirupati"],
+      "Maharashtra": ["Mumbai", "Pune", "Nagpur", "Nashik"],
+      "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai", "Salem"],
+      "Karnataka": ["Bangalore", "Mysore", "Mangalore", "Hubli"],
+      "Delhi": ["New Delhi", "Dwarka", "Rohini", "Saket"]
+    };
+
+    $(document).ready(function () {
+      $('#state').change(function () {
+        let state = $(this).val();
+        let cities = cityOptions[state] || [];
+        $('#city').empty().append('<option value="">Select City</option>');
+        cities.forEach(function (city) {
+          $('#city').append('<option value="' + city + '">' + city + '</option>');
+        });
+      });
+
+      $('#sendOtpBtn').click(function () {
+        let email = $('#email').val();
+        if (!email) {
+          alert('Please enter an email');
+          return;
+        }
+        $.ajax({
+          url: '/send_otp',
+          method: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({ email: email }),
+          success: function (response) {
+            alert(response.message);
+            $('#otpSection').show();
+          },
+          error: function (xhr) {
+            let errMsg = xhr.responseJSON ? xhr.responseJSON.message : "Error sending OTP";
+            alert(errMsg);
+          }
+        });
+      });
+
+      $('#verifyOtpBtn').click(function () {
+        let otp = $('#otp').val();
+        $.ajax({
+          url: '/verify_otp',
+          method: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({ otp: otp }),
+          success: function (response) {
+            if (response.status === "success") {
+              alert(response.message);
+              $('#registrationForm').show();
+              $('#otpForm').hide();
+              $('#verifiedEmail').val($('#email').val());
+              $('#email').prop('disabled', true);
+              sessionStorage.setItem('emailVerified', 'true');
+            } else {
+              alert("Invalid OTP. Please try again.");
+            }
+          },
+          error: function (xhr) {
+            let errMsg = xhr.responseJSON ? xhr.responseJSON.message : "OTP verification failed";
+            alert(errMsg);
+          }
+        });
+      });
+
+      $("#registrationForm").submit(function (e) {
+        e.preventDefault();
+        if (sessionStorage.getItem('emailVerified') !== 'true') {
+          alert('Email verification required!');
+          return;
+        }
+
+        let formData = {
+          fullname: $('#fullname').val(),
+          username: $('#username').val(),
+          email: $('#verifiedEmail').val(),
+          password: $('#password').val(),
+          confirm_password: $('#confirm_password').val(),
+          phone_number: $('#phonenumber').val(),
+          state: $('#state').val(),
+          city: $('#city').val()
+        };
+
+        $.ajax({
+          url: '/register/client',
+          method: 'POST',
+          data: formData,
+          success: function (response) {
+            alert(response.message);
+            window.location.href = "/";
+          },
+          error: function (xhr) {
+            alert(xhr.responseJSON.message);
+          }
+        });
+      });
+    });
+  </script>
+
+</body>
+
+</html>

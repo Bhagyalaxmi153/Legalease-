@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Booking</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <div id="google_translate_element"></div>
+    <script src="language.js"></script>
+
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        /* Custom button styling */
+        .btn-primary, .btn-secondary {
+            border-radius: 25px; /* Rounded corners */
+        }
+
+        .btn-primary {
+            background-color: #333; /* Greyish black */
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #555; /* Slightly lighter grey on hover */
+        }
+
+        .btn-secondary {
+            background-color: #6c757d; /* Secondary button color */
+            border: none;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268; /* Slightly lighter grey on hover */
+        }
+
+        .card {
+            border-radius: 10px;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: scale(1.03);
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .form-control {
+            border-radius: 25px;
+            box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #9b59b6;
+        }
+
+        /* Language selector positioning */
+        .language-selector {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+        }
+
+        /* Media Query for small screens */
+        @media (max-width: 584px) {
+            .container {
+                padding: 10px;
+            }
+
+            .form-control, .btn-primary, .btn-secondary {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <h2 class="text-center">Confirm Your Booking</h2>
+    <div class="card p-4 shadow-sm">
+        <p><strong>Date:</strong> {{ slot_date }}</p>
+        <p><strong>Start Time:</strong> {{ start_time }}</p>
+        <p><strong>End Time:</strong> {{ end_time }}</p>
+        <p><strong>Fare:</strong> ₹{{ fare }}</p>
+        <form action="/confirm_booking" method="POST">
+            <input type="hidden" name="slot_id" value="{{ slot_id }}">
+            <button type="submit" class="btn btn-primary">Confirm Booking</button>
+            <a href="/" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+</body>
+</html>

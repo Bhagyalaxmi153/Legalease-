@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <div id="google_translate_element"></div>
+<script src="language.js"></script>
+
+<script type="text/javascript">
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+    }
+</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            border-radius: 8px;
+        }
+
+        header {
+            background-color: #333333;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 24px;
+            border-radius: 8px;
+        }
+
+        main {
+            width: 80%;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            border-radius: 8px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px;
+        }
+
+        th {
+            background-color: #333333;
+            color: white;
+        }
+
+        td[colspan="8"] {
+            text-align: center;
+            font-style: italic;
+            color: #888;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .cancel-button {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+
+        .cancel-button:hover {
+            background-color: #c82333;
+        }
+
+        .cancel-button:disabled {
+            background-color: #ddd;
+            cursor: not-allowed;
+        }
+
+        #google_translate_element {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+        form select, form label, form button {
+        font-size: 16px;
+        padding: 8px 12px;
+        margin: 5px;
+        border-radius: 12px;
+        border: 1px solid #ccc;
+        box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
+        transition: all 0.3s ease-in-out;
+    }
+
+    form select:focus, form button:focus {
+        outline: none;
+        border-color: #333333;
+        box-shadow: 0 0 8px rgba(51, 51, 51, 0.4);
+    }
+
+    form button[type="submit"] {
+        background-color: #333333;
+        color: white;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    form button[type="submit"]:hover {
+        background-color: #222;
+    }
+    </style>
+
+</head>
+<script>
+    function confirmCancellation() {
+        return confirm("Are you sure you want to cancel this slot?");
+    }
+</script>
+
+<body>
+    <h1 style="text-align: center;">My Bookings</h1>
+    <form method="GET" action="{{ url_for('lsp_my_bookings') }}" style="text-align:center; margin-bottom: 20px;">
+        <label for="time_filter">Slot Time:</label>
+<select name="time_filter" id="time_filter">
+    <option value="all" {% if time_filter == 'all' %}selected{% endif %}>All</option>
+    <option value="passed" {% if time_filter == 'passed' %}selected{% endif %}>Passed</option>
+    <option value="upcoming" {% if time_filter == 'upcoming' %}selected{% endif %}>Not Passed</option>
+</select>
+
+<label for="slot_status">Slot Status:</label>
+<select name="slot_status" id="slot_status">
+    <option value="all" {% if slot_status == 'all' %}selected{% endif %}>All</option>
+    <option value="Available" {% if slot_status == 'Available' %}selected{% endif %}>Available</option>
+    <option value="Booked" {% if slot_status == 'Booked' %}selected{% endif %}>Booked</option>
+</select>
+
+    
+        <button type="submit">Apply Filters</button>
+    </form>
+    
+
+    <table>
+        <thead>
+            <tr>
+                <th>Slot ID</th>
+                <th>Client Name</th>
+                <th>Client Email</th>
+                <th>Phone Number</th>
+                <th>Slot Date</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Booking Status</th>
+                <th>Slot Status</th>
+                <th>Status Info</th> <!-- Added -->
+                <th>Action</th> <!-- Added -->
+            </tr>
+        </thead>
+        
+        <tbody>
+            {% for booking in bookings %}
+                <tr>
+                    <td>{{ booking.slot_id }}</td>
+                    <td>{{ booking.client_name if booking.client_name else 'No Client' }}</td>
+                    <td>{{ booking.client_email if booking.client_email else 'No Client' }}</td>
+                    <td>{{ booking.client_phone if booking.client_phone else 'No Client' }}</td>
+                    <td>{{ booking.slot_date }}</td>
+                    <td>{{ booking.start_time }}</td>
+                    <td>{{ booking.end_time }}</td>
+                    <td>{{ booking.booking_status if booking.booking_status else 'No Booking' }}</td>
+                    <td>{{ booking.slot_status }}</td>
+        
+                    <!-- Debugging: Check the values of booking_status and slot_status -->
+                    <td>
+                        <p>Booking Status: {{ booking.booking_status }}</p>
+                        <p>Slot Status: {{ booking.slot_status }}</p>
+                    </td>
+        
+                    <!-- Show the cancel button if booking_status is None or 'No Booking' and slot_status is Available or Frozen -->
+                    {% if (booking.booking_status is none or booking.booking_status == 'No Booking') and (booking.slot_status == 'Available' or booking.slot_status == 'Frozen') %}
+                        <td>
+                            <form action="{{ url_for('cancel_slot', slot_id=booking.slot_id) }}" method="POST" onsubmit="return confirmCancellation();">
+                                <button type="submit" class="cancel-button">Cancel Slot</button>
+                            </form>
+                        </td>
+                    {% endif %}
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="9">No slots found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        
+        
+        
+        
+        
+        
+        
+    </table>
+</body>
+</html>

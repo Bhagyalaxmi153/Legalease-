@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="language.js"></script>
+
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        html,
+        body {
+            min-height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            background: linear-gradient(135deg, #4c4949, #e0e0e0); /* Gradient from greyish black to light grey */
+            position: relative;
+        }
+
+        /* Positioning the language selector at the top-left corner */
+        .language-selector {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1000; /* Ensures it stays on top of other elements */
+        }
+
+        .form-container {
+            max-width: 600px;
+            width: 100%;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15); /* Lighter shadow */
+        }
+
+        h1 {
+            text-align: center;
+            color: #343a40;
+            font-size: 24px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        h1::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: -5px;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(135deg, #000000, #ffffff);
+            transform: translateX(-50%);
+            border-radius: 5px;
+        }
+
+        label {
+            font-weight: 500;
+            font-size: 16px;
+            margin-top: 10px;
+            display: block;
+            color: #6c757d;
+        }
+
+        input, select, textarea {
+            width: 90%; /* Reduced width */
+            padding: 10px; /* Reduced padding */
+            margin-top: 8px;
+            border: 1px solid #ced4da;
+            border-radius: 25px;
+            font-size: 16px;
+            color: #495057;
+            box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #9b59b6;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-container button {
+            width: auto;
+            background-color: #000000;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 20px;
+            text-shadow: 1px 1px black;
+            box-shadow: 1px 1px 2px black;
+            font-weight: 500;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        button:hover {
+            background-color: #9b59b6;
+        }
+
+        @media (max-width: 584px) {
+            .form-container {
+                max-width: 100%;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <div id="google_translate_element"></div>
+    </div>
+
+    <!-- Form Container -->
+    <div class="form-container">
+        <h1>Edit Profile</h1>
+
+        <form method="POST" action="/edit_profile">
+            <label for="fullname">Full Name:</label>
+            <input type="text" id="fullname" name="fullname" value="{{ user_data['full_name'] }}" required>
+
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" value="{{ user_data['username'] }}" required>
+
+            <label for="phone_number">Phone Number:</label>
+            <input type="text" id="phone_number" name="phone_number" value="{{ user_data['phone_number'] }}" required>
+
+            <label for="state">State:</label>
+            <input type="text" id="state" name="state" value="{{ user_data['state'] }}" required>
+
+            <label for="city">City:</label>
+            <input type="text" id="city" name="city" value="{{ user_data['city'] }}" required>
+
+            {% if user_type == 'lsp' %}
+                <label for="language_comfortable">Languages Comfortable:</label>
+                <input type="text" id="language_comfortable" name="language_comfortable" value="{{ user_data['language_comfortable'] }}">
+
+                <label for="profile_description">Profile Description:</label>
+                <textarea id="profile_description" name="profile_description">{{ user_data['profile_description'] }}</textarea>
+
+                <label for="consultation_type">Consultation Type:</label>
+                <select id="consultation_type" name="consultation_type">
+                    <option value="Online" {% if user_data['consultation_type'] == 'Online' %}selected{% endif %}>Online</option>
+                    <option value="Offline" {% if user_data['consultation_type'] == 'Offline' %}selected{% endif %}>Offline</option>
+                    <option value="Both" {% if user_data['consultation_type'] == 'Both' %}selected{% endif %}>Both</option>
+                </select>
+
+                <label for="linkedin_link">LinkedIn Link:</label>
+                <input type="url" id="linkedin_link" name="linkedin_link" value="{{ user_data['linkedin_link'] }}">
+
+            {% endif %}
+
+            <button type="submit">Update Profile</button>
+        </form>
+    </div>
+</body>
+</html>

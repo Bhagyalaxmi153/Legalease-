@@ -1,0 +1,140 @@
+{% for lsp in lsps %}
+<div class="col-md-4">
+    <div class="card shadow-sm p-3 mb-4">
+        <div class="card-body">
+            <h5 class="card-title">{{ lsp.full_name }}</h5>
+            <p class="card-text"><strong>Email:</strong> {{ lsp.email }}</p>
+            <p class="card-text"><strong>City:</strong> {{ lsp.city }}</p>
+            <p class="card-text"><strong>Consultation Type:</strong> {{ lsp.consultation_type }}</p>
+            <p class="card-text"><strong>Practice Area:</strong> {{ lsp.practice_area }}</p>
+            <p class="card-text"><strong>Years of Experience:</strong> {{ lsp.years_experience }}</p>
+            <p class="card-text"><strong>Court Jurisdiction:</strong> {{ lsp.court_jurisdiction }}</p>
+            <p class="card-text"><strong>Cases Solved:</strong> {{ lsp.cases_solved }}</p>
+            <p class="card-text"><strong>Profile Description:</strong> {{ lsp.profile_description }}</p>
+            <p class="card-text"><strong>Languages Comfortable:</strong> {{ lsp.language_comfortable }}</p>
+
+            <p class="card-text">
+                <strong>LinkedIn:</strong>
+                {% if lsp.linkedin_link %}
+                    <a href="{{ lsp.linkedin_link }}" target="_blank">View Profile</a>
+                {% else %}
+                    Not Provided
+                {% endif %}
+            </p>
+            <!-- View Reviews Button -->
+            <button class="btn btn-secondary view-reviews" data-lsp-id="{{ lsp.id }}">View Reviews</button>
+            <!-- Check Available Slots Button -->
+            <button class="btn btn-primary check-slots" data-lsp-id="{{ lsp.id }}">Check Available Slots</button>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+
+<!-- Reviews Modal -->
+<div class="modal fade" id="reviewsModal" tabindex="-1" role="dialog" aria-labelledby="reviewsModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="reviewsModalLabel">Reviews</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="reviewsContainer">
+          <!-- Reviews will be injected here dynamically -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    // Form filter functionality
+    $('#filterForm').on('submit', function(event) {
+        event.preventDefault();
+
+        const formData = $(this).serialize();
+
+        $.ajax({
+            url: '/filter_lsps',
+            method: 'GET',
+            data: formData,
+            success: function(response) {
+                $('#lspContainer').html(response);
+            },
+            error: function() {
+                alert("Failed to filter LSPs.");
+            }
+        });
+    });
+
+    // Event delegation for dynamically added 'view-reviews' buttons after filtering
+    $(document).on("click", ".view-reviews", function () {
+        let lspId = $(this).data("lsp-id");
+
+        // Set the LSP ID in session first
+        $.ajax({
+            url: `/set_lsp_id/${lspId}`,
+            method: "GET",
+            success: function () {
+                // Once LSP ID is set, fetch reviews
+                $.ajax({
+                    url: "/get_reviews",
+                    method: "GET",
+                    success: function (response) {
+                        let reviewsContainer = $("#reviewsContainer");
+                        reviewsContainer.empty();
+
+                        // Check if no reviews are available
+                        if (response.message) {
+                            reviewsContainer.append("<p class='text-danger'>" + response.message + "</p>");
+                        } else {
+                            // Loop through reviews and display them
+                            response.forEach(review => {
+                                reviewsContainer.append(`
+                                    <div class="review">
+                                        <p>${review.review_text}</p>
+                                    </div>
+                                `);
+                            });
+                        }
+
+                        $("#reviewsModal").modal("show"); // Show the modal with reviews
+                    },
+                    error: function () {
+                        alert("Failed to fetch reviews. Please try again.");
+                    }
+                });
+            },
+            error: function () {
+                alert("Failed to set LSP ID. Please try again.");
+            }
+        });
+    });
+});
+
+
+
+</script>
+<!-- Modal to display reviews -->
+<div id="reviewsModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="reviewsModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reviewsModalLabel">Reviews</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="reviewsContainer"></div>
+            </div>
+        </div>
+    </div>
+</div>

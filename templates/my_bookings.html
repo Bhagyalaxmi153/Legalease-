@@ -1,0 +1,313 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+    <div id="google_translate_element"></div>
+    <script src="language.js"></script>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            border-radius: 8px;
+        }
+
+        #reviewModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 15px;
+            width: 400px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        header {
+            background-color: #333333;
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+            font-size: 24px;
+            border-radius: 8px;
+        }
+
+        main {
+            width: 80%;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            border-radius: 8px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px;
+        }
+
+        th {
+            background-color: #333333;
+            color: white;
+        }
+
+        .cancel-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+
+        .cancel-btn:hover {
+            background-color: #c82333;
+        }
+
+        .cancel-btn:disabled {
+            background-color: #ddd;
+            cursor: not-allowed;
+        }
+
+        .no-bookings {
+            text-align: center;
+            font-size: 18px;
+            color: #777;
+            margin-top: 20px;
+        }
+
+        .review-btn {
+            background-color: #f0f0f0;
+            color: #333333;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+
+        .review-btn:disabled {
+            background-color: #ddd;
+            cursor: not-allowed;
+        }
+
+        #google_translate_element {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        My Bookings
+    </header>
+
+    <main>
+        <div id="bookings-container">
+            {% if bookings %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>LSP Name</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Fare</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                            <th>Review</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for booking in bookings %}
+                        <tr id="booking-row-{{ booking.booking_id }}">
+                            <td>{{ booking.lsp_name }}</td>
+                            <td>{{ booking.slot_date }}</td>
+                            <td>{{ booking.start_time }} - {{ booking.end_time }}</td>
+                            <td>₹{{ booking.fare }}</td>
+                            <td id="status-{{ booking.booking_id }}">{{ booking.status }}</td>
+                            <td>
+                                {% if booking.status == 'Confirmed' %}
+                                    <button class="cancel-btn" id="cancel-btn-{{ booking.booking_id }}" onclick="cancel_booking('{{ booking.booking_id }}')">Cancel</button>
+                                {% else %}
+                                    <span>N/A</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <button class="review-btn" id="give-review-btn-{{ booking.booking_id }}" 
+                                        onclick="openReviewModal('{{ booking.booking_id }}')" 
+                                        {% if booking.status == 'Cancelled' or booking.reviewed %} disabled {% endif %}>Give Review</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="no-bookings">No bookings found.</p>
+            {% endif %}
+        </div>
+
+        <!-- Review Modal -->
+        <div id="reviewModal" style="display:none;">
+            <div class="modal-content">
+                <span class="close-btn" onclick="closeReviewModal()">×</span>
+                <h3>Write a Review</h3>
+                <textarea id="reviewText" rows="4" cols="50" placeholder="Enter your review here..."></textarea>
+                <button onclick="submitReview()">Submit Review</button>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        function enableCancelButton(endTime, bookingId) {
+            const currentTime = new Date();
+            const endBookingTime = new Date(endTime);
+    
+            if (currentTime >= endBookingTime) {
+                $("#cancel-btn-" + bookingId).prop("disabled", true);
+            } else {
+                $("#cancel-btn-" + bookingId).prop("disabled", false);
+            }
+        }
+    
+        $(document).ready(function () {
+            {% for booking in bookings %}
+                var bookingEndTime = "{{ booking.slot_date }} {{ booking.end_time }}";  
+                var bookingId = "{{ booking.booking_id }}";
+    
+                enableCancelButton(bookingEndTime, bookingId);
+            {% endfor %}
+        });
+    
+        function cancel_booking(bookingId) {
+            console.log("Cancelling Booking ID:", bookingId);  
+    
+            if (confirm("Are you sure you want to cancel this booking?")) {
+                let btn = $("#booking-row-" + bookingId).find(".cancel-btn");
+                btn.prop("disabled", true).text("Cancelling...");
+    
+                $.ajax({
+                    url: "/cancel_booking",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({ booking_id: bookingId }),
+                    success: function (response) {
+                        alert(response.message);
+                        $("#status-" + bookingId).text("Cancelled");
+                        $("#booking-row-" + bookingId).find("td:last").html("<span>N/A</span>");
+                        $("#give-review-btn-" + bookingId).prop("disabled", true);
+                    },
+                    error: function (xhr) {
+                        alert("Error: " + xhr.responseJSON.message);
+                        btn.prop("disabled", false).text("Cancel");
+                    }
+                });
+            }
+        }
+        
+    
+        let currentBookingId = null;
+    
+        function openReviewModal(bookingId) {
+            currentBookingId = bookingId;
+            document.getElementById('reviewModal').style.display = 'flex';
+        }
+    
+        function closeReviewModal() {
+            document.getElementById('reviewModal').style.display = 'none';
+        }
+    
+        function submitReview() {
+            const reviewText = document.getElementById('reviewText').value.trim();
+    
+            if (!reviewText) {
+                alert("Please enter a review before submitting.");
+                return;
+            }
+    
+            $.ajax({
+                url: "/submit_review",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    booking_id: currentBookingId,
+                    review: reviewText
+                }),
+                success: function(response) {
+                    alert("Review submitted successfully!");
+                    closeReviewModal();
+                    $("#give-review-btn-" + currentBookingId).prop("disabled", true);
+                },
+                error: function(xhr) {
+                    let errorMessage = xhr.responseJSON.message || "An error occurred while submitting the review.";
+                    alert(errorMessage);
+                }
+            });
+        }
+    
+        // Inserted code to enable/disable the review button based on the booking time
+        function enableReviewButton(endTime, bookingId) {
+            const currentTime = new Date();
+            const endBookingTime = new Date(endTime);
+    
+            // Disable the button if the current time is less than the end time
+            if (currentTime < endBookingTime) {
+                $("#give-review-btn-" + bookingId).prop("disabled", true);
+            } else {
+                $("#give-review-btn-" + bookingId).prop("disabled", false);
+            }
+        }
+    
+        $(document).ready(function () {
+            {% for booking in bookings %}
+                var bookingEndTime = "{{ booking.slot_date }} {{ booking.end_time }}";  
+                var bookingId = "{{ booking.booking_id }}";
+    
+                enableReviewButton(bookingEndTime, bookingId);
+            {% endfor %}
+        });
+    </script>
+    
+    
+
+</body>
+</html>

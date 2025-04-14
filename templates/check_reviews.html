@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Reviews - LegalEase</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+            background: linear-gradient(135deg, #686666, #ffffff);
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+            text-align: center;
+        }
+
+        .container h2 {
+            font-size: 25px;
+            font-weight: 500;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .container h2::before {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: -5px;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(135deg, #000000, #ffffff);
+            transform: translateX(-50%);
+            border-radius: 5px;
+        }
+
+        .review-container {
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            border: 1px solid #ddd;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* Hover Effect - Slightly Enlarges the Box */
+        .review-container:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .review .client-name {
+            font-weight: bold;
+            color: black;
+            font-size: 18px;
+        }
+
+        .review .created-at {
+            font-size: 14px;
+            color: #555;
+            margin-top: 5px;
+        }
+
+        .review .review-text {
+            font-size: 16px;
+            color: #333;
+            margin-top: 10px;
+            line-height: 1.5;
+        }
+
+        .no-reviews {
+            font-size: 18px;
+            color: #ff7675;
+            font-weight: 500;
+        }
+
+        .error {
+            font-size: 18px;
+            color: #ff3b3b;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Check Reviews</h2>
+    <main>
+        {% if reviews %}
+            <div class="reviews-list">
+                {% for review in reviews %}
+                    <div class="review-container">
+                        <div class="review">
+                            <p class="client-name">{{ review.client_name }}</p>
+                            <p class="created-at">Reviewed on: {{ review.created_at }}</p>
+                            <p class="review-text">{{ review.review_text }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="no-reviews">No reviews found for this LSP.</p>
+        {% endif %}
+
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+    </main>
+</div>
+
+</body>
+</html>

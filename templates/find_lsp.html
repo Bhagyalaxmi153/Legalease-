@@ -1,0 +1,434 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <div id="google_translate_element"></div>
+    <script src="language.js"></script>
+
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <title>Available Legal Service Providers</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            position: relative; /* Ensures that the language selector can be positioned relative to the body */
+        }
+
+        /* Language selector positioning */
+        .language-selector {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1000; /* Keeps it above other elements */
+        }
+        /* Custom button styling */
+.btn-primary, .btn-success, .btn-close {
+    border-radius: 25px; /* Adjust the value as needed */
+}
+
+/* Hover effect for rounded buttons */
+.btn-primary:hover, .btn-success:hover {
+    background-color: #555; /* Slightly lighter grey on hover */
+    border-radius: 25px; /* Ensure rounded corners on hover */
+}
+
+
+        .card {
+            border-radius: 10px;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: scale(1.03);
+        }
+
+        /* Custom button styling */
+        .btn-primary {
+            background-color: #333; /* Greyish black */
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #555; /* Slightly lighter grey on hover */
+        }
+
+        .btn-success {
+            background-color: #4e4e4e; /* Greyish black */
+            border: none;
+        }
+
+        .btn-success:hover {
+            background-color: #6e6e6e; /* Slightly lighter grey on hover */
+        }
+
+        .modal-content {
+            border-radius: 10px;
+        }
+
+        .modal-header {
+            background-color: #f8f9fa;
+        }
+
+        /* Make the filter form and modal table more polished */
+        .form-control {
+            border-radius: 25px;
+            box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #9b59b6;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        /* Media Query for small screens */
+        @media (max-width: 584px) {
+            .container {
+                padding: 10px;
+            }
+
+            .form-control, .btn-primary {
+                font-size: 14px;
+            }
+        }
+
+        /* Customize modal content */
+        .modal-body {
+            padding: 15px;
+        }
+
+        table th, table td {
+            padding: 15px;
+            text-align: center;
+        }
+
+        table thead {
+            background-color: #007bff;
+            color: white;
+        }
+
+        table tbody tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        table tbody tr:hover {
+            background-color: #e9ecef;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Language Selector (Positioned at the top-right) -->
+    <div class="language-selector">
+        <div id="google_translate_element"></div>
+    </div>
+
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Available Legal Service Providers</h2>
+
+        <!-- Filter Form -->
+        <!-- Filter Form -->
+<form id="filterForm" class="mb-4">
+    <div class="row g-3">
+        <div class="col-md-2">
+            <select class="form-control" name="language_comfortable">
+                <option value="">Language Spoken</option>
+                <option value="Telugu">Telugu</option>
+                <option value="Hindi">Hindi</option>
+                <option value="English">English</option>
+            </select>
+        </div>
+        
+        <div class="col-md-2">
+            <select class="form-control" name="practice_area">
+                <option value="">Practice Area</option>
+                <option value="Civil">Civil</option>
+                <option value="Corporate">Corporate</option>
+                <option value="Criminal">Criminal</option>
+                <option value="Family">Family</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <select class="form-control" name="city">
+                <option value="">City</option>
+                <optgroup label="Andhra Pradesh">
+                    <option value="Visakhapatnam">Visakhapatnam</option>
+                    <option value="Vijayawada">Vijayawada</option>
+                    <option value="Guntur">Guntur</option>
+                    <option value="Tirupati">Tirupati</option>
+                </optgroup>
+                <optgroup label="Maharashtra">
+                    <option value="Mumbai">Mumbai</option>
+                    <option value="Pune">Pune</option>
+                    <option value="Nagpur">Nagpur</option>
+                    <option value="Nashik">Nashik</option>
+                </optgroup>
+                <optgroup label="Tamil Nadu">
+                    <option value="Chennai">Chennai</option>
+                    <option value="Coimbatore">Coimbatore</option>
+                    <option value="Madurai">Madurai</option>
+                    <option value="Salem">Salem</option>
+                </optgroup>
+                <optgroup label="Karnataka">
+                    <option value="Bangalore">Bangalore</option>
+                    <option value="Mysore">Mysore</option>
+                    <option value="Mangalore">Mangalore</option>
+                    <option value="Hubli">Hubli</option>
+                </optgroup>
+                <optgroup label="Delhi">
+                    <option value="New Delhi">New Delhi</option>
+                    <option value="Dwarka">Dwarka</option>
+                    <option value="Rohini">Rohini</option>
+                    <option value="Saket">Saket</option>
+                </optgroup>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <select class="form-control" name="consultation_type">
+                <option value="">Consultation Type</option>
+                <option value="Online">Online</option>
+                <option value="Offline">Offline</option>
+                <option value="Both">Both</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <input type="number" class="form-control" name="min_cases_solved" placeholder="Min Cases Solved">
+        </div>
+
+        <div class="col-md-2">
+            <input type="number" class="form-control" name="min_experience" placeholder="Min Experience (Years)">
+        </div>
+
+        <div class="col-md-12">
+            <button type="submit" class="btn btn-primary w-100">Filter</button>
+        </div>
+    </div>
+</form>
+
+        
+
+        <!-- LSP Cards -->
+        <div class="row" id="lspContainer">
+            {% for lsp in lsps %}
+<div class="col-md-4 col-sm-6 col-12 mb-4">
+    <div class="card shadow-sm p-3">
+        <div class="card-body">
+            <h5 class="card-title">{{ lsp.full_name }}</h5>
+            <p class="card-text"><strong>Email:</strong> {{ lsp.email }}</p>
+            <p class="card-text"><strong>City:</strong> {{ lsp.city }}</p>
+            <p class="card-text"><strong>Consultation Type:</strong> {{ lsp.consultation_type }}</p>
+            <p class="card-text"><strong>Practice Area:</strong> {{ lsp.practice_area }}</p>
+            <p class="card-text"><strong>Years of Experience:</strong> {{ lsp.years_experience }}</p>
+            <p class="card-text"><strong>Court Jurisdiction:</strong> {{ lsp.court_jurisdiction }}</p>
+            <p class="card-text"><strong>Cases Solved:</strong> {{ lsp.cases_solved }}</p>
+            <p class="card-text"><strong>Profile Description:</strong> {{ lsp.profile_description }}</p>
+            <p class="card-text"><strong>Languages Comfortable:</strong> {{ lsp.language_comfortable }}</p>
+            <p class="card-text">
+                <strong>LinkedIn:</strong>
+                {% if lsp.linkedin_link %}
+                    <a href="{{ lsp.linkedin_link }}" target="_blank">View Profile</a>
+                {% else %}
+                    Not Provided
+                {% endif %}
+            </p>
+            <!-- View Reviews Button -->
+            <button class="btn btn-secondary view-reviews" data-lsp-id="{{ lsp.id }}">View Reviews</button>
+            <!-- Check Available Slots Button -->
+            <button class="btn btn-primary check-slots" data-lsp-id="{{ lsp.id }}">Check Available Slots</button>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+        </div>
+
+        <!-- Modal for Available Slots -->
+        <div class="modal fade" id="slotsModal" tabindex="-1" aria-labelledby="slotsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="slotsModalLabel">Available Slots</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Start Time</th>
+                                    <th>End Time</th>
+                                    <th>Fare (₹)</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="slotsTableBody">
+                                <!-- Slots will be populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Modal for Reviews -->
+<div class="modal fade" id="reviewsModal" tabindex="-1" aria-labelledby="reviewsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reviewsModalLabel">Reviews</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="reviewsContainer">
+                <!-- Reviews will be populated dynamically -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Form filter functionality
+            $('#filterForm').on('submit', function(event) {
+                event.preventDefault();
+
+                const formData = $(this).serialize();
+
+                $.ajax({
+                    url: '/filter_lsps',
+                    method: 'GET',
+                    data: formData,
+                    success: function(response) {
+                        $('#lspContainer').html(response);
+                    },
+                    error: function() {
+                        alert("Failed to filter LSPs.");
+                    }
+                });
+            });
+
+            // Use event delegation to attach the click event to dynamically created buttons
+            $(document).on('click', '.check-slots', function() {
+    let lspId = $(this).data("lsp-id");
+    $.ajax({
+        url: `/get_slots?lsp_id=${lspId}`,
+        method: "GET",
+        success: function(response) {
+            $("#slotsTableBody").empty();
+            if (response.length === 0) {
+                $("#slotsTableBody").append('<tr><td colspan="5" class="text-center text-danger">No slots available</td></tr>');
+            } else {
+                response.forEach(slot => {
+                    $("#slotsTableBody").append(` 
+                        <tr>
+                            <td>${new Date(slot.slot_date).toDateString()}</td>
+                            <td>${slot.start_time}</td>
+                            <td>${slot.end_time}</td>
+                            <td>${slot.fare}</td>
+                            <td>
+                                <a href="/confirm_booking?slot_id=${slot.id}" class="btn btn-success">Book Now</a>
+                            </td>
+                        </tr>
+                    `);
+                });
+            }
+            $("#slotsModal").modal("show");
+        },
+        error: function() {
+            alert("Failed to fetch slots. Please try again.");
+        }
+    });
+});
+
+        });
+        $(document).ready(function() {
+    // Form filter functionality
+    $('#filterForm').on('submit', function(event) {
+        event.preventDefault();
+
+        const formData = $(this).serialize();
+
+        $.ajax({
+            url: '/filter_lsps',
+            method: 'GET',
+            data: formData,
+            success: function(response) {
+                $('#lspContainer').html(response);
+            },
+            error: function() {
+                alert("Failed to filter LSPs.");
+            }
+        });
+    });
+
+    // Event delegation for dynamically added 'view-reviews' buttons after filtering
+    $(document).on("click", ".view-reviews", function () {
+    let lspId = $(this).data("lsp-id");
+
+    // Set the LSP ID in session first
+    $.ajax({
+        url: `/set_lsp_id/${lspId}`,
+        method: "GET",
+        success: function () {
+            // Once LSP ID is set, fetch reviews
+            $.ajax({
+                url: "/get_reviews",
+                method: "GET",
+                success: function (response) {
+                    let reviewsContainer = $("#reviewsContainer");
+                    reviewsContainer.empty();
+
+                    // Check if no reviews are available
+                    if (response.message) {
+                        reviewsContainer.append("<p class='text-danger'>" + response.message + "</p>");
+                    } else {
+                        // Loop through reviews and display them
+                        response.forEach(review => {
+                            reviewsContainer.append(`
+                                <div class="review">
+                                    <p>${review.review_text}</p>
+                                </div>
+                            `);
+                        });
+                    }
+
+                    // Show the modal with reviews
+                    $('#reviewsModal').modal('show');
+                },
+                error: function () {
+                    alert("Failed to fetch reviews. Please try again.");
+                }
+            });
+        },
+        error: function () {
+            alert("Failed to set LSP ID. Please try again.");
+        }
+    });
+});
+
+});
+
+    
+
+    </script>
+
+</body>
+</html>

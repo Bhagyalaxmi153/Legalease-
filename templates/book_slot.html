@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <div id="google_translate_element"></div>
+<script src="language.js"></script>
+
+<script type="text/javascript">
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+    }
+</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Slot</title>
+    <script>
+        function fetchSlots() {
+            fetch(`/get_slots/{{ lsp_id }}`)
+                .then(response => response.json())
+                .then(slots => {
+                    let slotList = document.getElementById("slots");
+                    slotList.innerHTML = "";
+                    slots.forEach(slot => {
+                        let slotItem = `<li>
+                            ${slot.slot_date} | ${slot.start_time} - ${slot.end_time} | ₹${slot.fare}
+                            <button onclick="bookSlot(${slot.id})">Book</button>
+                        </li>`;
+                        slotList.innerHTML += slotItem;
+                    });
+                });
+        }
+
+        function bookSlot(slotId) {
+            fetch('/confirm_booking', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: `lsp_id={{ lsp_id }}&slot_id=${slotId}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                fetchSlots();
+            });
+        }
+
+        window.onload = fetchSlots;
+    </script>
+</head>
+<body>
+    <h2>Book Slot for Legal Service Provider</h2>
+    <ul id="slots"></ul>
+</body>
+</html>

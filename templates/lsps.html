@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <div id="google_translate_element"></div>
+<script src="language.js"></script>
+
+<script type="text/javascript">
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+    }
+</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Service Providers</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+    <h2>Legal Service Providers</h2>
+    <ul>
+        {% for slot in slots %}
+        <div class="slot">
+            <p>Date: {{ slot.slot_date }}</p>
+            <p>Time: {{ slot.start_time }} - {{ slot.end_time }}</p>
+            <p>Fare: ₹{{ slot.fare }}</p>
+            <a href="{{ url_for('confirm_booking', slot_id=slot.id) }}">
+                <button>Select Slot</button>
+            </a>
+        </div>
+    {% endfor %}
+    
+    </ul>
+
+    <script>
+        $(document).ready(function () {
+            $(".check-slots").click(function () {
+                let lspId = $(this).data("lspid"); // Get LSP ID from button attribute
+                $.get(`/get_slots/${lspId}`, function (data) {
+                    let slotsHtml = "<ul>";
+                    if (data.length === 0) {
+                        slotsHtml += "<li>No available slots</li>";
+                    } else {
+                        data.forEach(slot => {
+                            slotsHtml += `<li>Date: ${slot.slot_date}, Time: ${slot.start_time} - ${slot.end_time}, Fare: ₹${slot.fare}</li>`;
+                        });
+                    }
+                    slotsHtml += "</ul>";
+                    $(`#slots-${lspId}`).html(slotsHtml);
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

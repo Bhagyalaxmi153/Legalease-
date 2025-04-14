@@ -1,0 +1,277 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Slots - LegalEase</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background: linear-gradient(135deg, #6f6c6c, #f0f0f0);
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 25px;
+            font-weight: 500;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        h2::before {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: -5px;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(135deg, #1e1e1e, #f0f0f0);
+            transform: translateX(-50%);
+            border-radius: 5px;
+        }
+
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            border-color: #d7c2df;
+        }
+
+        button {
+            background: linear-gradient(135deg, #6d6868, #f0f0f0);
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            border: none;
+            padding: 12px;
+            margin-top: 15px;
+            border-radius: 25px;
+            box-shadow: 1px 1px 2px black;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: scale(0.98);
+            background: linear-gradient(135deg, #000000, #ffffff);
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background: linear-gradient(135deg, #545353, #f0f0f0);
+            color: white;
+        }
+
+        .delete-btn {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background-color: darkred;
+        }
+
+        .freeze-btn {
+            background: rgb(153, 173, 153);
+            color: white;
+            border: none;
+            padding: 8px 16px;  /* Reduced padding */
+            margin-top: 15px;
+            cursor: pointer;
+            font-size: 14px;  /* Reduced font size */
+            font-weight: 500;
+            border-radius: 15px; /* Reduced border radius */
+            transition: all 0.3s ease;
+            width: 150px; /* Set a fixed width */
+            display: block;
+            margin: 15px auto; /* Center the button */
+        }
+
+        .freeze-btn:hover {
+            background-color: rgb(129, 162, 129);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Manage Slots</h2>
+        
+        <form id="slotForm">
+            <label>Date:</label>
+            <input type="date" id="date" required>
+
+            <label>Start Time:</label>
+            <input type="time" id="start_time" required>
+
+            <label>End Time:</label>
+            <input type="time" id="end_time" required>
+
+            <label>Fare:</label>
+            <input type="number" id="fare" required>
+
+            <button type="submit">Add Slot</button>
+        </form>
+
+        <h3>Available Slots</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Fare</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="slotTable">
+            </tbody>
+        </table>
+
+        <button class="freeze-btn" id="freezeSlots">Freeze Slots</button>
+    </div>
+
+    <script>
+        // Get today's date
+        let today = new Date();
+        let endDate = new Date();
+        endDate.setDate(today.getDate() + 7);
+
+        // Format dates to YYYY-MM-DD for comparison
+        let todayFormatted = today.toISOString().split('T')[0];
+        let endDateFormatted = endDate.toISOString().split('T')[0];
+
+        // Disable dates outside the range
+        document.getElementById('date').setAttribute('min', todayFormatted);  // Disable past dates
+        document.getElementById('date').setAttribute('max', endDateFormatted);  // Disable dates beyond 7 days
+
+        let slots = [];
+
+        document.getElementById('slotForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            let date = document.getElementById('date').value;
+            let startTime = document.getElementById('start_time').value;
+            let endTime = document.getElementById('end_time').value;
+            let fare = document.getElementById('fare').value;
+
+            // Check if the new slot overlaps with existing ones
+            for (let slot of slots) {
+                if (slot.date === date && (
+                    (startTime < slot.endTime && endTime > slot.startTime) || 
+                    (startTime >= slot.startTime && startTime < slot.endTime)
+                )) {
+                    alert("Error: Slot conflicts with an existing slot.");
+                    return;
+                }
+            }
+
+            let newSlot = { date, startTime, endTime, fare, status: 'Available' };
+            slots.push(newSlot);
+            renderSlots();
+        });
+
+        function renderSlots() {
+            let table = document.getElementById('slotTable');
+            table.innerHTML = '';
+
+            slots.forEach((slot, index) => {
+                let row = `<tr>
+                    <td>${slot.date}</td>
+                    <td>${slot.startTime}</td>
+                    <td>${slot.endTime}</td>
+                    <td>${slot.fare}</td>
+                    <td>${slot.status}</td>
+                    <td>
+                        ${slot.status === 'Available' ? `<button class="delete-btn" onclick="deleteSlot(${index})">Delete</button>` : 'Frozen'}
+                    </td>
+                </tr>`;
+                table.innerHTML += row;
+            });
+        }
+
+        function deleteSlot(index) {
+            slots.splice(index, 1);
+            renderSlots();
+        }
+
+        document.getElementById('freezeSlots').addEventListener('click', function() {
+            let lsp_id = 1; // Replace with actual lsp_id
+            slots = slots.map(slot => ({ ...slot, status: 'Frozen' }));
+
+            fetch('/add_slots', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ lsp_id: lsp_id, slots: slots })
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message))
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+
+</body>
+</html>

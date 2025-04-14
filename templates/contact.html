@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us - LegalEase</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding: 20px;
+      background: linear-gradient(135deg, #686666, #ffffff);
+    }
+
+    .container {
+      max-width: 600px;
+      width: 100%;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .container h2 {
+      text-align: center;
+      font-size: 25px;
+      font-weight: 500;
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .container h2::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -5px;
+      width: 50px;
+      height: 3px;
+      background: linear-gradient(135deg, #000000, #ffffff);
+      transform: translateX(-50%);
+      border-radius: 5px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      font-weight: 500;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border-radius: 25px;
+      border: 1px solid #ccc;
+      box-shadow: 1px 1px 2px black;
+      outline: none;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: #9b59b6;
+    }
+
+    .form-group textarea {
+      resize: none;
+      height: 120px;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 12px;
+      border-radius: 25px;
+      border: none;
+      text-shadow: 1px 1px black;
+      box-shadow: 1px 1px 2px black;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: linear-gradient(135deg, #000000, #ffffff);
+    }
+
+    .btn-submit:hover {
+      transform: scale(0.98);
+    }
+
+    @media (max-width: 500px) {
+      .container {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h2>Contact Us</h2>
+    <form action="/contact_us" method="POST">
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      <div class="form-group">
+        <label for="message">Your Message</label>
+        <textarea id="message" name="message" required></textarea>
+      </div>
+      <button type="submit" class="btn-submit">Submit</button>
+    </form>
+  </div>
+
+</body>
+
+</html>
